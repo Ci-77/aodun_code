@@ -1,4 +1,3 @@
-
 <style>
 .form-demo {
   width: 100%;
@@ -12,7 +11,7 @@
       <el-table-column label="姓名" prop="name" width="150" />
       <el-table-column label="地址" prop="address" width="150" />
       <el-table-column label="操作" fixed="right" min-width="150">
-        <template #default="{row}">
+        <template #default="{ row }">
           <el-button link type="primary" size="small" @click="editData(row.name)">编辑</el-button>
           <el-button link type="primary" size="small" @click="delData(row.name)">删除</el-button>
         </template>
@@ -23,7 +22,7 @@
 
 <script setup>
 // 开始写声明式api
-import axios from 'axios'
+import request from '@/utils/request'
 import { ref } from 'vue'
 
 var list = ref([
@@ -47,12 +46,16 @@ var list = ref([
 // 声明式api
 
 var getData = () => {
-  axios.get('/api/getData').then((res) => {
-    list.value = res.data
+  request.get('/api/getData').then((res) => {
+    if (res.code == 0) {
+      list.value = res.data
+    }
   })
 }
 var editData = (id) => {
-  console.log(id)
+  request.post('/api/editData', { id: id }).then((res) => {
+    console.log(res.data)
+  })
 }
 var delData = (id) => {
   console.log(id)

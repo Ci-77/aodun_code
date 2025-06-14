@@ -212,8 +212,7 @@ export default {
         formData.append('name', this.formData.deviceName)
         formData.append('ip', this.formData.deviceIp)
 
-        axios
-          .post('http://127.0.0.1:8080/device/add', formData, {
+        axios.post('http://127.0.0.1:8080/device/add', formData, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
             },
