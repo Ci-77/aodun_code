@@ -70,16 +70,10 @@ input[type='button']:hover {
         <input type="text" id="username" v-model="username" placeholder="your name..." />
         <label for="password">密码：</label>
         <input type="password" id="password" v-model="password" placeholder="your password..." />
-        <!-- <label for="woman">女人：</label>
-      <select name="select" id="woman">
-        <option value="1">全部</option>
-        <option value="2">秀秀</option>
-        <option value="3">娟娟</option>
-        <option value="4">小圆</option>
-      </select> -->
+        <label for="confirmPassword">确认密码：</label>
+        <input type="password" id="confirmPassword" v-model="confirmPassword" />
         <div display="flex" justify-content="space-between">
-          <input type="button" name="submit" @click="login()" value="登录" />
-          <input type="button" name="login" @click="goRegister()" value="注册" />
+          <input type="button" name="login" @click="register()" value="注册" />
         </div>
       </form>
     </div>
@@ -88,33 +82,35 @@ input[type='button']:hover {
 
 <script>
 import request from '@/utils/request'
+import { ElMessage } from 'element-plus'
 // 使用选项式实现
 export default {
   data() {
     return {
       username: '',
       password: '',
+      confirmPassword: '',
     }
   },
   methods: {
-    login() {
-      const { username, password } = this
-      if (!username || !password) {
-        alert('账号或密码不能为空')
+    register() {
+      const { username, password, confirmPassword } = this
+      if (!username || !password || !confirmPassword) {
+        ElMessage.error('账号或者密码不能为空')
         return
       }
-      request.get('/login', { username, password }).then((res) => {
-        if (res.data.code == 0) {
-          this.$router.push('/home')
+      if (password !== confirmPassword) {
+        ElMessage.error('两次密码输入不一致')
+        return
+      }
+      request.post('/register', { username, password, confirmPassword }).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success('注册成功')
+          this.$router.push('/login')
+        } else {
+          ElMessage.error(res.message)
         }
-        console.log(res)
       })
-
-      console.log(this.username, this.password)
-    },
-
-    goRegister() {
-      this.$router.push('/register')
     },
   },
 }
