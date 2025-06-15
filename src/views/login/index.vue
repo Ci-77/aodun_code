@@ -103,14 +103,12 @@ export default {
         alert('账号或密码不能为空')
         return
       }
-      request.get('/login', { username, password }).then((res) => {
-        if (res.data.code == 0) {
-          this.$router.push('/home')
+      request.post('api/login', { username, password }).then((res) => {
+        if (res.code === 0) {
+          this.$router.push('/')
         }
-        console.log(res)
+       
       })
-
-      console.log(this.username, this.password)
     },
 
     goRegister() {

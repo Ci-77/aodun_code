@@ -11,6 +11,7 @@ const routes = [
       { path: 'doc/:id', component: () => import('@/views/doc/index.vue') },
     ],
   },
+
 ]
 
 const router = createRouter({
