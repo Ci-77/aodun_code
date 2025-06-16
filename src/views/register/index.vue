@@ -106,8 +106,6 @@ export default {
       request.post('/api/register', { username, password, confirmPassword }).then((res) => {
         if (res.code ==0) {
           this.$router.push('/login')
-        } else {
-          ElMessage.error(res.msg)
         }
       })
     },
