@@ -36,6 +36,34 @@ body,
   display: flex;
   align-items: center;
 }
+.avatar-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.popover-info h3,
+.popover-info p {
+  margin: 5px 0;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.popover-info {
+  width: 300px;
+  height: 200px;
+  top: 56px;
+  position: absolute;
+  border: 1px solid #999;
+  padding: 0px;
+  color: black;
+  background-color: #edeff1;
+  right: 0px;
+  margin-right: 0px;
+
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
 .el-aside {
   background-color: #cbd2db;
   color: white;
@@ -59,14 +87,24 @@ body,
     <el-container>
       <!--顶部区域-->
       <el-header>
-        header
         <div class="header-content">
           <div class="logo-area">
             <span>我的logo</span>
           </div>
           <div class="header-actions">
             <el-switch style="margin-right: 20px" v-model="isDark"></el-switch>
-            <el-avatar>User</el-avatar>
+            <div class="avatar-container" @mouseover="showInfo" @mouseleave="hideInfo">
+              <el-avatar :size="50" :src="circleURL"></el-avatar>
+              <div v-if="isHovered" class="popover-info">
+                <el-avatar :size="30" :src="circleURL"></el-avatar>
+                <h3>个人信息</h3>
+                <p><strong>用户名:</strong> UserName</p>
+                <p><strong>邮箱:</strong> user@example.com</p>
+                <p><strong>职位:</strong> 前端开发</p>
+                <p><strong>注册时间:</strong> 2021-05-05</p>
+                <el-button>退出登录</el-button>
+              </div>
+            </div>
           </div>
         </div>
       </el-header>
@@ -76,37 +114,31 @@ body,
 
         <el-aside class="aside" width="200px">
           <el-menu
-            default-active="2"
+            router
+            default-active="/"
+            mode="vertical"
             class="el-menu-vertical-demo"
             @open="handleOpen"
             @close="handleClose"
+            @select="handleSelect"
           >
-            <el-sub-menu index="1">
+            <el-menu-item index="/">
               <template #title>
-                <el-icon><HomeFilled /></el-icon>
+                <el-icon>
+                  <HomeFilled />
+                </el-icon>
                 <span>首页</span>
               </template>
-              <el-menu-item-group title="Group One">
-                <el-menu-item index="1-1">item one</el-menu-item>
-                <el-menu-item index="1-2">item two</el-menu-item>
-              </el-menu-item-group>
-              <el-menu-item-group title="Group Two">
-                <el-menu-item index="1-3">item three</el-menu-item>
-              </el-menu-item-group>
-              <el-sub-menu index="1-4">
-                <template #title>item four</template>
-                <el-menu-item index="1-4-1">item one</el-menu-item>
-              </el-sub-menu>
-            </el-sub-menu>
-            <el-menu-item index="2">
+            </el-menu-item>
+            <el-menu-item index="/doc">
               <el-icon><document /></el-icon>
               <span>文档管理</span>
             </el-menu-item>
-            <el-menu-item index="3">
+            <el-menu-item index="/user">
               <el-icon><User /></el-icon>
               <span>个人中心</span>
             </el-menu-item>
-            <el-menu-item index="4">
+            <el-menu-item index="/setting">
               <el-icon><Setting /></el-icon>
               <span>设置</span>
             </el-menu-item>
@@ -115,7 +147,9 @@ body,
 
         <el-container>
           <!--主体区域-->
-          <el-main>Main</el-main>
+          <el-main>
+            <router-view />
+          </el-main>
           <!--底部区域-->
           <el-footer>Footer</el-footer>
         </el-container>
@@ -133,8 +167,18 @@ import {
   HomeFilled,
   User,
 } from '@element-plus/icons-vue'
-import { ref } from 'vue';
+import { ref } from 'vue'
+import userAvatar from '@/assets/images/清漪.png'
+import { useRouter } from 'vue-router'
 
+const route = useRouter()
+const circleURL = ref(userAvatar)
 const isDark = ref(false)
-
+const isHovered = ref(false)
+const showInfo = () => {
+  isHovered.value = true
+}
+const hideInfo = () => {
+  isHovered.value = false
+}
 </script>
