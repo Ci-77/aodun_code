@@ -100,11 +100,12 @@ export default {
     login() {
       const { username, password } = this
       if (!username || !password) {
-        alert('账号或密码不能为空')
+        ElMessage.error('账号或密码不能为空')
         return
       }
       request.post('api/login', { username, password }).then((res) => {
         if (res.code === 0) {
+          localStorage.setItem('token', res.data)
           this.$router.push('/')
         }
        

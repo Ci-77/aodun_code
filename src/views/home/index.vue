@@ -40,26 +40,26 @@ body,
   position: relative;
   display: flex;
   align-items: center;
+  padding-bottom: 10px;
 }
 .popover-info h3,
 .popover-info p {
-  margin: 5px 0;
+  margin: 2px 0;
   padding: 0;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1.4;
 }
 
 .popover-info {
   width: 300px;
-  height: 200px;
-  top: 56px;
+  height: 250px;
+  top: 60px;
   position: absolute;
   border: 1px solid #999;
   padding: 0px;
   color: black;
   background-color: #edeff1;
   right: 0px;
-  margin-right: 0px;
 
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
@@ -93,16 +93,20 @@ body,
           </div>
           <div class="header-actions">
             <el-switch style="margin-right: 20px" v-model="isDark"></el-switch>
-            <div class="avatar-container" @mouseover="showInfo" @mouseleave="hideInfo">
+            <div class="avatar-container" @click="toggleInfo">
               <el-avatar :size="50" :src="circleURL"></el-avatar>
-              <div v-if="isHovered" class="popover-info">
+              <div
+                v-if="isHovered"
+                class="popover-info"
+                @click.stop
+              >
                 <el-avatar :size="30" :src="circleURL"></el-avatar>
                 <h3>个人信息</h3>
                 <p><strong>用户名:</strong> UserName</p>
                 <p><strong>邮箱:</strong> user@example.com</p>
                 <p><strong>职位:</strong> 前端开发</p>
                 <p><strong>注册时间:</strong> 2021-05-05</p>
-                <el-button>退出登录</el-button>
+                <el-button @click="logout" type="primary">退出登录</el-button>
               </div>
             </div>
           </div>
@@ -115,14 +119,12 @@ body,
         <el-aside class="aside" width="200px">
           <el-menu
             router
-            default-active="/"
+            :default-active="$route.path"
             mode="vertical"
             class="el-menu-vertical-demo"
-            @open="handleOpen"
-            @close="handleClose"
             @select="handleSelect"
           >
-            <el-menu-item index="/">
+            <el-menu-item index="/home">
               <template #title>
                 <el-icon>
                   <HomeFilled />
@@ -170,15 +172,40 @@ import {
 import { ref } from 'vue'
 import userAvatar from '@/assets/images/清漪.png'
 import { useRouter } from 'vue-router'
+import request from '@/utils/request'
+import { ElMessage } from 'element-plus'
 
-const route = useRouter()
+const router = useRouter()
 const circleURL = ref(userAvatar)
 const isDark = ref(false)
 const isHovered = ref(false)
-const showInfo = () => {
-  isHovered.value = true
+const toggleInfo = () => {
+  isHovered.value = !isHovered.value
 }
-const hideInfo = () => {
-  isHovered.value = false
+// 点击弹窗外部关闭
+import { onMounted, onBeforeUnmount } from 'vue'
+const handleClickOutside = (e) => {
+  if (!e.target.closest('.avatar-container')) {
+    isHovered.value = false
+  }
+}
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
+const handleSelect = (index) => {
+  router.push(index)
+}
+const logout = ()=>{
+  //写退出登录
+  request.post('/api/logout').then((res)=>{
+    if (res.code==0){
+      router.push('/login')
+    }else{
+      ElMessage.error('登出失败')
+    }
+  })
 }
 </script>

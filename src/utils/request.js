@@ -5,14 +5,15 @@ import { ElMessage } from 'element-plus'
 
 // 创建一个 axios 实例
 const service = axios.create({
-  baseURL: import.meta.env.VITE_BASE_API,// api 的 base_url
+  baseURL: import.meta.env.VITE_BASE_API, // api 的 base_url
   timeout: 5000, // 请求超时时间
+  withCredentials: true, // ← 关键！跨域请求带上 cookie
 })
+
 // request拦截器
 service.interceptors.request.use(
   (config) => {
     // 在请求发送之前做一些处理
-    // 比如添加 token 等
     const token = localStorage.getItem('token')
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`
@@ -21,7 +22,7 @@ service.interceptors.request.use(
   },
   (error) => {
     // 处理请求错误
-    ElMessage.error("请求发送失败")
+    ElMessage.error('请求发送失败')
     console.error('Request Error:', error)
     return Promise.reject(error)
   },
@@ -32,17 +33,17 @@ service.interceptors.response.use(
     // 处理响应数据
     if (response.data && response.data.code === 0) {
       // 这里可以根据需要对响应数据进行处理
-      ElMessage.success(response.data.msg||"操作成功")
+      ElMessage.success(response.data.msg || '操作成功')
       return response.data
     }
-    ElMessage.error(response.data.msg||"操作失败")
+    ElMessage.error(response.data.msg || '操作失败')
     return Promise.reject(error)
   },
   (error) => {
     // 网络不通
     const { response } = error
     if (response) {
-      ElMessage.error(response.data.msg||"网络错误")
+      ElMessage.error(response.data.msg || '网络错误')
       console.error('Response Error:', response)
       return Promise.reject(response.data)
     }
