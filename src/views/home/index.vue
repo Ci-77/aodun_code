@@ -80,6 +80,7 @@ body,
   color: white;
   line-height: 60px;
 }
+
 </style> 
 
 <template>
@@ -93,20 +94,16 @@ body,
           </div>
           <div class="header-actions">
             <el-switch style="margin-right: 20px" v-model="isDark"></el-switch>
-            <div class="avatar-container" @click="toggleInfo">
+            <div class="avatar-container" @click="toggleInfo()">
               <el-avatar :size="50" :src="circleURL"></el-avatar>
-              <div
-                v-if="isHovered"
-                class="popover-info"
-                @click.stop
-              >
+              <div v-if="isHovered" class="popover-info" @click.stop>
                 <el-avatar :size="30" :src="circleURL"></el-avatar>
                 <h3>个人信息</h3>
                 <p><strong>用户名:</strong> UserName</p>
                 <p><strong>邮箱:</strong> user@example.com</p>
                 <p><strong>职位:</strong> 前端开发</p>
                 <p><strong>注册时间:</strong> 2021-05-05</p>
-                <el-button @click="logout" type="primary">退出登录</el-button>
+                <el-button @click="logout()" type="primary">退出登录</el-button>
               </div>
             </div>
           </div>
@@ -198,12 +195,12 @@ onBeforeUnmount(() => {
 const handleSelect = (index) => {
   router.push(index)
 }
-const logout = ()=>{
+const logout = () => {
   //写退出登录
-  request.post('/api/logout').then((res)=>{
-    if (res.code==0){
+  request.post('/api/myapp/login_module/logout').then((res) => {
+    if (res.code == 0) {
       router.push('/login')
-    }else{
+    } else {
       ElMessage.error('登出失败')
     }
   })

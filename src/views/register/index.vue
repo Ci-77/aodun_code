@@ -103,7 +103,7 @@ export default {
         ElMessage.error('两次密码输入不一致')
         return
       }
-      request.post('/api/register', { username, password, confirmPassword }).then((res) => {
+      request.post('/api/myapp/login_module/register', { username, password, confirmPassword }).then((res) => {
         if (res.code ==0) {
           this.$router.push('/login')
         }

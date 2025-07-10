@@ -103,7 +103,7 @@ export default {
         ElMessage.error('账号或密码不能为空')
         return
       }
-      request.post('api/login', { username, password }).then((res) => {
+      request.post('/api/myapp/login_module/login', { username, password }).then((res) => {
         if (res.code === 0) {
           localStorage.setItem('token', res.data)
           this.$router.push('/')
